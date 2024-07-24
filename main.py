@@ -66,10 +66,6 @@ def bellman_ford(matriz, origem):
     
     return distancias
 
-def contar_distancias_iguais(distancias1, distancias2):
-    """Conta a quantidade de distâncias iguais entre duas listas de distâncias"""
-    return sum(1 for d1, d2 in zip(distancias1, distancias2) if d1 == d2)
-
 def processar_arquivos(pasta_entradas, caminho_csv):
     """Processa todos os arquivos na pasta de entradas, executa os algoritmos de Dijkstra e Bellman-Ford, e salva os resultados em um CSV"""
     if not os.path.exists(pasta_entradas):
@@ -80,7 +76,7 @@ def processar_arquivos(pasta_entradas, caminho_csv):
 
     # Abrir o arquivo CSV para escrita
     with open(caminho_csv, 'w', newline='') as csvfile:
-        fieldnames = ['Número do Teste', 'Arquivo', 'Algoritmo', 'Tempo Total', 'Distâncias Iguais']
+        fieldnames = ['Número do Teste', 'Arquivo', 'Algoritmo', 'Tempo Total', 'Matriz de Distâncias Igual']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -101,12 +97,12 @@ def processar_arquivos(pasta_entradas, caminho_csv):
                     distancias_bellman_ford = bellman_ford(matriz, 0)  # Começando do nó 0
                     tempo_bellman_ford = time.time() - start_time
 
-                    # Contar a quantidade de distâncias iguais
-                    distancias_iguais = contar_distancias_iguais(distancias_dijkstra, distancias_bellman_ford)
+                    # Verificar se as matrizes de distâncias são iguais
+                    matriz_distancias_igual = distancias_dijkstra == distancias_bellman_ford
                 except ValueError as e:
                     distancias_bellman_ford = []
                     tempo_bellman_ford = time.time() - start_time
-                    distancias_iguais = 0
+                    matriz_distancias_igual = False
 
                 # Salvar os resultados no CSV para Dijkstra
                 writer.writerow({
@@ -114,7 +110,7 @@ def processar_arquivos(pasta_entradas, caminho_csv):
                     'Arquivo': arquivo,
                     'Algoritmo': 'Dijkstra',
                     'Tempo Total': tempo_dijkstra,
-                    'Distâncias Iguais': distancias_iguais
+                    'Matriz de Distâncias Igual': matriz_distancias_igual
                 })
 
                 # Salvar os resultados no CSV para Bellman-Ford
@@ -123,7 +119,7 @@ def processar_arquivos(pasta_entradas, caminho_csv):
                     'Arquivo': arquivo,
                     'Algoritmo': 'Bellman-Ford',
                     'Tempo Total': tempo_bellman_ford,
-                    'Distâncias Iguais': distancias_iguais
+                    'Matriz de Distâncias Igual': matriz_distancias_igual
                 })
 
                 # Imprimir os resultados
@@ -131,7 +127,7 @@ def processar_arquivos(pasta_entradas, caminho_csv):
                 print(f"Teste: {teste}")
                 print(f"Tempo Dijkstra: {tempo_dijkstra:.6f} segundos")
                 print(f"Tempo Bellman-Ford: {tempo_bellman_ford:.6f} segundos")
-                print(f"Distâncias Iguais: {distancias_iguais}")
+                print(f"Matriz de Distâncias Igual: {matriz_distancias_igual}")
                 print(f"Distâncias Dijkstra: {distancias_dijkstra}")
                 print(f"Distâncias Bellman-Ford: {distancias_bellman_ford}")
                 print()

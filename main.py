@@ -93,7 +93,12 @@ def processar_arquivos(pasta_entradas, caminho_csv):
 
                 # Medir o tempo e calcular distâncias com Bellman-Ford
                 start_time = time.time()
-                try:
+                distancias_bellman_ford = bellman_ford(matriz, 0) 
+                tempo_bellman_ford = time.time() - start_time
+
+                matriz_distancias_igual = distancias_dijkstra == distancias_bellman_ford
+                
+                '''try:
                     distancias_bellman_ford = bellman_ford(matriz, 0)  # Começando do nó 0
                     tempo_bellman_ford = time.time() - start_time
 
@@ -102,7 +107,7 @@ def processar_arquivos(pasta_entradas, caminho_csv):
                 except ValueError as e:
                     distancias_bellman_ford = []
                     tempo_bellman_ford = time.time() - start_time
-                    matriz_distancias_igual = False
+                    matriz_distancias_igual = False'''
 
                 # Salvar os resultados no CSV para Dijkstra
                 writer.writerow({
